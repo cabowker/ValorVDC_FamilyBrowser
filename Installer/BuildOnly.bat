@@ -88,7 +88,8 @@ for %%V in (R24 R25 R26 R27) do (
 
 :: ── 6. Read version from Version.props ──────────────────────────────────────
 :: Parse <ProductVersion>x.y.z</ProductVersion>
-for /f "tokens=2 delims=><" %%v in (
+:: Tokens: 1=leading spaces, 2=tag name, 3=value
+for /f "tokens=3 delims=><" %%v in (
     'findstr /i "ProductVersion" Version.props'
 ) do set "PRODUCT_VERSION=%%v"
 
