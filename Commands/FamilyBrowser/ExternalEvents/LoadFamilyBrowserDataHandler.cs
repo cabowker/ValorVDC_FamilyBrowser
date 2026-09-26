@@ -110,7 +110,7 @@ public class LoadFamilyBrowserDataHandler : IExternalEventHandler
     // Checks the built-in ALL_MODEL_TYPE_IMAGE parameter first (standard families),
     // then falls back to a custom parameter named "Type Image" (common on tag families
     // which don't have the built-in parameter by default).
-    private static BitmapSource LoadTypeImage(Document doc, FamilySymbol symbol)
+    private static BitmapSource? LoadTypeImage(Document doc, FamilySymbol symbol)
     {
         try
         {
@@ -160,7 +160,7 @@ public class LoadFamilyBrowserDataHandler : IExternalEventHandler
     }
 
     // Asks Revit to render a 64x64 geometry preview for the family symbol.
-    private static BitmapSource LoadGeneratedPreview(FamilySymbol symbol)
+    private static BitmapSource? LoadGeneratedPreview(FamilySymbol symbol)
     {
         try
         {
@@ -170,7 +170,7 @@ public class LoadFamilyBrowserDataHandler : IExternalEventHandler
         catch { return null; }
     }
 
-    private static BitmapSource BitmapToBitmapSource(Bitmap bitmap)
+    private static BitmapSource? BitmapToBitmapSource(Bitmap bitmap)
     {
         using var stream = new MemoryStream();
         bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);

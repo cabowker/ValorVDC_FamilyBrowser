@@ -6,9 +6,9 @@ namespace ValorVDC_FamilyBrowser.Commands.FamilyBrowser.ExternalEvents;
 
 public class SaveFamilyBrowserSettingsHandler : IExternalEventHandler
 {
-    private FamilyBrowserViewModel _viewModel;
+    private FamilyBrowserViewModel? _viewModel;
 
-    public FamilyBrowserSettings SettingsToSave { get; set; }
+    public FamilyBrowserSettings? SettingsToSave { get; set; }
 
     public void SetViewModel(FamilyBrowserViewModel vm) => _viewModel = vm;
 

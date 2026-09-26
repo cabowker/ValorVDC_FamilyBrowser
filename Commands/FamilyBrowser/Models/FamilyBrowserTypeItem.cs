@@ -10,10 +10,10 @@ public partial class FamilyBrowserTypeItem : ObservableObject
     private bool _isVisible = true;
 
     [ObservableProperty]
-    private BitmapSource _preview;
+    private BitmapSource? _preview;
 
-    public string FamilyName { get; init; }
-    public string TypeName { get; init; }
+    public required string FamilyName { get; init; }
+    public required string TypeName { get; init; }
     public string DisplayName => $"{FamilyName} : {TypeName}";
-    public ElementId SymbolId { get; init; }
+    public required ElementId SymbolId { get; init; }
 }

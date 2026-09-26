@@ -8,6 +8,6 @@ public partial class BrowseCategoryItem : ObservableObject
     [ObservableProperty]
     private bool _isExpanded = true;
 
-    public string CategoryName { get; init; }
+    public required string CategoryName { get; init; }
     public ObservableCollection<FamilyBrowserTypeItem> Types { get; } = new();
 }

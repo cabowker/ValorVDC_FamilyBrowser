@@ -60,7 +60,7 @@ public static class FamilyBrowserUserSettingsStorage
         catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] SaveUserSettings failed: {ex.Message}"); }
     }
 
-    private static UserSettingsFile Read()
+    private static UserSettingsFile? Read()
         => JsonConvert.DeserializeObject<UserSettingsFile>(File.ReadAllText(FilePath));
 
     private static UserSettingsFile SafeRead()

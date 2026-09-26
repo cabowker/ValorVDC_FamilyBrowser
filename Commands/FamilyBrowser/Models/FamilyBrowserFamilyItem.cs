@@ -5,6 +5,6 @@ namespace ValorVDC_FamilyBrowser.Commands.FamilyBrowser.Models;
 
 public partial class FamilyBrowserFamilyItem : ObservableObject
 {
-    public string FamilyName { get; init; }
+    public required string FamilyName { get; init; }
     public ObservableCollection<FamilyBrowserTypeItem> Types { get; } = new();
 }
