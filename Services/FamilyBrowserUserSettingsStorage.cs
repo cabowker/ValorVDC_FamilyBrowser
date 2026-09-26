@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -24,7 +25,7 @@ public static class FamilyBrowserUserSettingsStorage
             var file = Read();
             return file?.Scope ?? SettingsScope.Project;
         }
-        catch { return SettingsScope.Project; }
+        catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] LoadScope failed: {ex.Message}"); return SettingsScope.Project; }
     }
 
     public static FamilyBrowserSettings LoadUserSettings()
@@ -34,7 +35,7 @@ public static class FamilyBrowserUserSettingsStorage
             if (!File.Exists(FilePath)) return new FamilyBrowserSettings();
             return Read()?.UserSettings ?? new FamilyBrowserSettings();
         }
-        catch { return new FamilyBrowserSettings(); }
+        catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] LoadUserSettings failed: {ex.Message}"); return new FamilyBrowserSettings(); }
     }
 
     public static void SaveScope(SettingsScope scope)
@@ -45,7 +46,7 @@ public static class FamilyBrowserUserSettingsStorage
             file.Scope = scope;
             Write(file);
         }
-        catch { }
+        catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] SaveScope failed: {ex.Message}"); }
     }
 
     public static void SaveUserSettings(FamilyBrowserSettings settings)
@@ -56,7 +57,7 @@ public static class FamilyBrowserUserSettingsStorage
             file.UserSettings = settings;
             Write(file);
         }
-        catch { }
+        catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] SaveUserSettings failed: {ex.Message}"); }
     }
 
     private static UserSettingsFile Read()
@@ -65,7 +66,7 @@ public static class FamilyBrowserUserSettingsStorage
     private static UserSettingsFile SafeRead()
     {
         try { return File.Exists(FilePath) ? Read() ?? new UserSettingsFile() : new UserSettingsFile(); }
-        catch  { return new UserSettingsFile(); }
+        catch (Exception ex) { Debug.WriteLine($"[FamilyBrowser] SafeRead failed: {ex.Message}"); return new UserSettingsFile(); }
     }
 
     private static void Write(UserSettingsFile file)

@@ -42,12 +42,27 @@ if not exist "%WIX_BIN%\candle.exe" (
 )
 echo WiX bin: %WIX_BIN%
 
-:: ── 3. Build plugin DLLs for every Revit version ───────────────────────────
+:: ── 3. Restore then build each Revit version in sequence ───────────────────
+::    IMPORTANT: project.assets.json is shared — restore is paired with its
+::    build so a later restore doesn't overwrite the assets before R24 builds.
 echo.
-echo Building plugin DLLs...
+echo Restoring and building plugin DLLs...
 
 for %%V in (R24 R25 R26 R27) do (
-    echo   Building Release %%V ...
+    echo.
+    echo   [%%V] Restoring...
+    "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
+        /p:Configuration="Release %%V" ^
+        /p:Platform=AnyCPU ^
+        /t:Restore ^
+        /v:minimal ^
+        /nologo
+    if errorlevel 1 (
+        echo ERROR: Restore failed for Release %%V
+        popd & exit /b 1
+    )
+
+    echo   [%%V] Building...
     "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
         /p:Configuration="Release %%V" ^
         /p:Platform=AnyCPU ^
@@ -60,7 +75,7 @@ for %%V in (R24 R25 R26 R27) do (
     )
 )
 
-:: ── 4. Verify output DLLs exist ─────────────────────────────────────────────
+:: ── 5. Verify output DLLs exist ─────────────────────────────────────────────
 echo.
 echo Verifying output DLLs...
 for %%V in (R24 R25 R26 R27) do (
@@ -71,7 +86,7 @@ for %%V in (R24 R25 R26 R27) do (
     echo   bin\Release %%V\ValorVDC_FamilyBrowser.dll  OK
 )
 
-:: ── 5. Read version from Version.props ──────────────────────────────────────
+:: ── 6. Read version from Version.props ──────────────────────────────────────
 :: Parse <ProductVersion>x.y.z</ProductVersion>
 for /f "tokens=2 delims=><" %%v in (
     'findstr /i "ProductVersion" Version.props'
@@ -80,7 +95,7 @@ for /f "tokens=2 delims=><" %%v in (
 echo.
 echo Product version: %PRODUCT_VERSION%
 
-:: ── 6. Build the MSI ────────────────────────────────────────────────────────
+:: ── 7. Build the MSI ────────────────────────────────────────────────────────
 echo.
 echo Building MSI...
 

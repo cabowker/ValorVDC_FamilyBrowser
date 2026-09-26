@@ -15,10 +15,10 @@ namespace ValorVDC_FamilyBrowser.Commands.FamilyBrowser.ExternalEvents;
 
 public class LoadFamilyBrowserDataHandler : IExternalEventHandler
 {
-    private FamilyBrowserViewModel _viewModel;
+    private FamilyBrowserViewModel? _viewModel;
     private bool _viewActivatedSubscribed;
 
-    public bool UseViewMemory { get; set; }
+    public bool UseViewMemory { private get; set; }
 
     public void SetViewModel(FamilyBrowserViewModel vm) => _viewModel = vm;
 
