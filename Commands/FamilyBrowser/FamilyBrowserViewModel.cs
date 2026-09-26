@@ -40,6 +40,14 @@ public partial class FamilyBrowserViewModel : ObservableObject
     [ObservableProperty]
     private SettingsScope _currentScope;
 
+    [ObservableProperty]
+    private string? _updateTag;     // e.g. "v1.0.2" when newer release found, else null
+
+    public bool IsUpdateAvailable => UpdateTag != null;
+
+    partial void OnUpdateTagChanged(string? value)
+        => OnPropertyChanged(nameof(IsUpdateAvailable));
+
     // RadioButton-friendly bool wrappers for the scope toggle
     public bool IsScopeProject
     {
@@ -71,6 +79,15 @@ public partial class FamilyBrowserViewModel : ObservableObject
         _saveSettingsHandler.SetViewModel(this);
 
         _currentScope = FamilyBrowserUserSettingsStorage.LoadScope();
+
+        _ = CheckForUpdateAsync();
+    }
+
+    private async System.Threading.Tasks.Task CheckForUpdateAsync()
+    {
+        var tag = await UpdateChecker.GetLatestTagIfNewerAsync().ConfigureAwait(false);
+        if (tag != null)
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => UpdateTag = tag);
     }
 
     partial void OnCurrentScopeChanged(SettingsScope value)

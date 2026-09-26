@@ -522,19 +522,45 @@
         <Border Grid.Row="4"
                 Background="#E2E2E2" BorderBrush="#CACACA" BorderThickness="0,1,0,0"
                 Padding="6,3">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                <Image Width="18" Height="18" Margin="0,0,5,0" VerticalAlignment="Center"
-                       RenderOptions.BitmapScalingMode="HighQuality"
-                       Source="pack://application:,,,/ValorVDC_FamilyBrowser;component/Resources/Logo-100x100.png" />
-                <TextBlock FontSize="9" Foreground="#999999" VerticalAlignment="Center">
-                    <Hyperlink NavigateUri="https://valorvdc.com"
-                               RequestNavigate="Hyperlink_RequestNavigate"
-                               Foreground="#888888" TextDecorations="None">
-                        <Run Text="ValorVDC" FontWeight="SemiBold" Foreground="#666666" />
-                        <Run Text="  ·  Revit Plugins &amp; Families" />
-                    </Hyperlink>
-                </TextBlock>
+            <StackPanel>
+
+                <!-- Update notice — visible only when a newer GitHub release exists -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0,0,0,2"
+                            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolVis}}">
+                    <TextBlock FontSize="9" VerticalAlignment="Center">
+                        <Run Text="⬆" Foreground="#E65C00" />
+                        <Run Text=" Update available: " Foreground="#666666" />
+                        <Hyperlink NavigateUri="{Binding UpdateTag, StringFormat='https://github.com/cabowker/ValorVDC_FamilyBrowser/releases/tag/{0}'}"
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#E65C00" FontWeight="SemiBold">
+                            <Run Text="{Binding UpdateTag}" />
+                        </Hyperlink>
+                        <Run Text="  →  " Foreground="#999999" />
+                        <Hyperlink NavigateUri="https://github.com/cabowker/ValorVDC_FamilyBrowser/releases/latest"
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#E65C00">
+                            <Run Text="Download" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- ValorVDC branding -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Image Width="18" Height="18" Margin="0,0,5,0" VerticalAlignment="Center"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Source="pack://application:,,,/ValorVDC_FamilyBrowser;component/Resources/Logo-100x100.png" />
+                    <TextBlock FontSize="9" Foreground="#999999" VerticalAlignment="Center">
+                        <Hyperlink NavigateUri="https://valorvdc.com"
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#888888" TextDecorations="None">
+                            <Run Text="ValorVDC" FontWeight="SemiBold" Foreground="#666666" />
+                            <Run Text="  ·  Revit Plugins &amp; Families" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+
             </StackPanel>
         </Border>
 
