@@ -44,14 +44,6 @@ echo.
 
 for %%V in (%VERSIONS%) do (
     echo ── %%V ─────────────────────────────────────────────────────────────────
-    echo   Cleaning...
-    "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
-        /p:Configuration="Release %%V" ^
-        /p:Platform=AnyCPU ^
-        /t:Clean ^
-        /v:minimal /nologo
-    if errorlevel 1 ( echo ERROR: Clean failed for %%V & popd & exit /b 1 )
-
     echo   Restoring...
     "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
         /p:Configuration="Release %%V" ^
@@ -59,6 +51,14 @@ for %%V in (%VERSIONS%) do (
         /t:Restore ^
         /v:minimal /nologo
     if errorlevel 1 ( echo ERROR: Restore failed for %%V & popd & exit /b 1 )
+
+    echo   Cleaning...
+    "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
+        /p:Configuration="Release %%V" ^
+        /p:Platform=AnyCPU ^
+        /t:Clean ^
+        /v:minimal /nologo
+    if errorlevel 1 ( echo ERROR: Clean failed for %%V & popd & exit /b 1 )
 
     echo   Building...
     "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
