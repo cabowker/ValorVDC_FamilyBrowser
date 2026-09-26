@@ -1,0 +1,542 @@
+<UserControl x:Class="ValorVDC_FamilyBrowser.Commands.FamilyBrowser.FamilyBrowserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:ValorVDC_FamilyBrowser.Commands.FamilyBrowser"
+             xmlns:models="clr-namespace:ValorVDC_FamilyBrowser.Commands.FamilyBrowser.Models"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:FamilyBrowserViewModel}"
+             MinWidth="200">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVis" />
+
+        <Style x:Key="CollapseWhenNull" TargetType="FrameworkElement">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Preview}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ShowWhenNoPreview" TargetType="FrameworkElement">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Preview}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Browse type card: click to place -->
+        <DataTemplate x:Key="TypeCardTemplate" DataType="{x:Type models:FamilyBrowserTypeItem}">
+            <Button Width="90" Height="78" Margin="2" Padding="0"
+                    ToolTip="{Binding DisplayName}"
+                    Command="{Binding DataContext.PlaceElementCommand,
+                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="5" BorderThickness="1"
+                                BorderBrush="#CCCCCC" Background="#F7F7F7">
+                            <Grid>
+                                <Image Source="{Binding Preview}"
+                                       Width="40" Height="40"
+                                       HorizontalAlignment="Center" VerticalAlignment="Top"
+                                       Margin="0,6,0,0" Stretch="Uniform"
+                                       Style="{StaticResource CollapseWhenNull}" />
+
+                                <TextBlock Text="{Binding FamilyName}"
+                                           FontSize="9" FontWeight="Bold" Foreground="#777777"
+                                           HorizontalAlignment="Center" VerticalAlignment="Top"
+                                           Margin="4,10,4,0" TextWrapping="Wrap" TextAlignment="Center"
+                                           Style="{StaticResource ShowWhenNoPreview}" />
+
+                                <StackPanel VerticalAlignment="Bottom" Margin="3,0,3,3">
+                                    <TextBlock Text="{Binding FamilyName}"
+                                               FontSize="8" FontWeight="SemiBold"
+                                               TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding TypeName}"
+                                               FontSize="7" Foreground="#555555"
+                                               TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center" />
+                                </StackPanel>
+
+                                <TextBlock Text="+" FontSize="10" FontWeight="Bold"
+                                           Foreground="#BBBBBB"
+                                           HorizontalAlignment="Right" VerticalAlignment="Top"
+                                           Margin="0,3,4,0" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#2196F3" />
+                                <Setter TargetName="Bd" Property="Background" Value="#E3F2FD" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#BBDEFB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </DataTemplate>
+
+        <!-- Configure category row -->
+        <DataTemplate x:Key="ConfigCategoryTemplate" DataType="{x:Type models:FamilyBrowserCategoryItem}">
+            <StackPanel>
+                <Border Background="#DCDCDC" Padding="4,4" Margin="0,3,0,0" CornerRadius="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="22" />
+                            <ColumnDefinition Width="22" />
+                            <ColumnDefinition Width="*"  />
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="36" />
+                        </Grid.ColumnDefinitions>
+
+                        <ToggleButton Grid.Column="0"
+                                      IsChecked="{Binding IsExpanded}"
+                                      Width="18" Height="18"
+                                      Background="Transparent" BorderThickness="0"
+                                      FontSize="10" VerticalAlignment="Center">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Setter Property="Content" Value="▶" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content" Value="▼" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+
+                        <CheckBox Grid.Column="1"
+                                  IsChecked="{Binding IsVisible}"
+                                  VerticalAlignment="Center"
+                                  ToolTip="Show this category in the palette" />
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding CategoryName}"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="#222222" Margin="3,0,0,0" />
+                            <TextBlock Text="{Binding TotalTypeCount, StringFormat=' ({0})'}"
+                                       FontSize="10" Foreground="#888888"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <Button Grid.Column="3"
+                                Content="All" FontSize="9" Padding="2,2"
+                                Margin="2,0,1,0" VerticalAlignment="Center"
+                                ToolTip="Check all types in this category"
+                                Command="{Binding DataContext.SelectAllInCategoryCommand,
+                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}" />
+
+                        <Button Grid.Column="4"
+                                Content="None" FontSize="9" Padding="2,2"
+                                Margin="1,0,2,0" VerticalAlignment="Center"
+                                ToolTip="Uncheck all types in this category"
+                                Command="{Binding DataContext.SelectNoneInCategoryCommand,
+                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding Families}"
+                              Margin="20,0,4,4">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:FamilyBrowserFamilyItem}">
+                            <StackPanel Margin="0,4,0,0">
+                                <TextBlock Text="{Binding FamilyName}"
+                                           FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#444444" Margin="0,0,0,2" />
+
+                                <ItemsControl ItemsSource="{Binding Types}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type models:FamilyBrowserTypeItem}">
+                                            <Grid Margin="0,1,0,1" MinHeight="22">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="22" />
+                                                    <ColumnDefinition Width="28" />
+                                                    <ColumnDefinition Width="*"  />
+                                                </Grid.ColumnDefinitions>
+
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsVisible}"
+                                                          VerticalAlignment="Center" />
+
+                                                <Image Grid.Column="1"
+                                                       Source="{Binding Preview}"
+                                                       Width="24" Height="24"
+                                                       Stretch="Uniform" VerticalAlignment="Center"
+                                                       Margin="0,0,3,0"
+                                                       Style="{StaticResource CollapseWhenNull}" />
+
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding TypeName}"
+                                                           FontSize="10" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding DisplayName}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
+
+        <Style x:Key="BrowseSectionExpander" TargetType="Expander">
+            <Setter Property="Margin" Value="0,2,0,0" />
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#333333" Margin="2,0,0,0" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#EFEFEF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"    />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ── Header ── -->
+        <Border Grid.Row="0"
+                Background="#E0E0E0" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1"
+                Padding="6,5,6,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"    />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="22" Padding="4,2" FontSize="11"
+                         VerticalContentAlignment="Center"
+                         ToolTip="Filter by family or type name">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <TextBlock Grid.Column="0"
+                           Text="Configure Palette"
+                           FontSize="11" FontWeight="SemiBold"
+                           VerticalAlignment="Center" Margin="2,0,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <Button Grid.Column="1"
+                        Width="60" Height="22" Margin="4,0,0,0" FontSize="10"
+                        ToolTip="Configure which categories and types appear in the palette"
+                        Command="{Binding ToggleConfigureModeCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="⚙ Setup" />
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="BorderBrush" Value="#BBBBBB" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Content" Value="← Browse" />
+                                    <Setter Property="Background" Value="#E3F2FD" />
+                                    <Setter Property="BorderBrush" Value="#2196F3" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- All / None — configure mode only -->
+                <Button Grid.Column="2"
+                        Content="All" Width="32" Height="22" Margin="3,0,0,0" FontSize="10"
+                        ToolTip="Check all categories and types"
+                        Command="{Binding SelectAllCommand}"
+                        Background="White" BorderBrush="#BBBBBB">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Grid.Column="3"
+                        Content="None" Width="36" Height="22" Margin="3,0,0,0" FontSize="10"
+                        ToolTip="Uncheck all categories and types"
+                        Command="{Binding SelectNoneCommand}"
+                        Background="White" BorderBrush="#BBBBBB">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Grid.Column="4"
+                        Content="⟳" Width="26" Height="22" Margin="3,0,0,0" FontSize="13"
+                        ToolTip="Reload families from the current document"
+                        Command="{Binding RefreshCommand}"
+                        Background="White" BorderBrush="#BBBBBB">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ── Loading strip ── -->
+        <Border Grid.Row="1" Background="#FFF9C4" Padding="6,3"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolVis}}">
+            <TextBlock Text="Loading…" FontSize="10" Foreground="#7B6A00" />
+        </Border>
+
+        <!-- ══════════ BROWSE VIEW ══════════ -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+
+            <StackPanel Margin="2,4,2,8">
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Margin="8,6,8,0" FontSize="10" Foreground="#888888"
+                           TextWrapping="Wrap">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasData}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <ItemsControl ItemsSource="{Binding BrowseCategories}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:BrowseCategoryItem}">
+                            <Expander Header="{Binding CategoryName}"
+                                      IsExpanded="{Binding IsExpanded}"
+                                      Style="{StaticResource BrowseSectionExpander}">
+                                <ItemsControl ItemsSource="{Binding Types}" Margin="4,4,4,6">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type models:FamilyBrowserTypeItem}">
+                                            <ContentPresenter Content="{Binding}"
+                                                              ContentTemplate="{StaticResource TypeCardTemplate}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Margin="8,10,8,0" FontSize="10" Foreground="#AAAAAA"
+                           TextWrapping="Wrap" TextAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BrowseCategories.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    Click ⚙ Setup to choose which categories and family types appear here.
+                </TextBlock>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ══════════ CONFIGURE VIEW ══════════ -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+
+            <StackPanel Margin="4,4,4,8">
+
+                <TextBlock Text="Check the categories and types you want to show in the palette."
+                           FontSize="10" Foreground="#666666"
+                           TextWrapping="Wrap" Margin="2,0,2,8" />
+
+                <ItemsControl ItemsSource="{Binding AllCategories}"
+                              ItemTemplate="{StaticResource ConfigCategoryTemplate}" />
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ── Configure footer ── -->
+        <Border Grid.Row="3"
+                Background="#E8E8E8" BorderBrush="#CCCCCC" BorderThickness="0,1,0,0"
+                Padding="6,6">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConfigureMode}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Scope selector -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                    <TextBlock Text="Save to:" FontSize="10" Foreground="#555555"
+                               VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <RadioButton Content="This Project"
+                                 IsChecked="{Binding IsScopeProject, Mode=TwoWay}"
+                                 GroupName="SettingsScope" FontSize="10"
+                                 VerticalAlignment="Center" Margin="0,0,10,0"
+                                 ToolTip="Settings are saved inside the Revit file and shared with the team" />
+                    <RadioButton Content="My Account"
+                                 IsChecked="{Binding IsScopeUser, Mode=TwoWay}"
+                                 GroupName="SettingsScope" FontSize="10"
+                                 VerticalAlignment="Center"
+                                 ToolTip="Settings apply to all projects on this computer" />
+                </StackPanel>
+
+                <!-- Cancel / Save -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancel" Width="60" Height="24" Margin="0,0,6,0"
+                            Background="White" BorderBrush="#BBBBBB"
+                            Command="{Binding CancelConfigureCommand}"
+                            ToolTip="Discard changes and return to the palette" />
+
+                    <Button Height="24" Padding="10,0"
+                            Foreground="White" Background="#2196F3" BorderBrush="#1976D2"
+                            Command="{Binding SaveSettingsCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="Save to Project" />
+                                <Setter Property="ToolTip" Value="Save settings into the Revit project file" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsScopeUser}" Value="True">
+                                        <Setter Property="Content" Value="Save to My Account" />
+                                        <Setter Property="ToolTip" Value="Save settings to your user profile on this computer" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ── Branding footer ── -->
+        <Border Grid.Row="4"
+                Background="#E2E2E2" BorderBrush="#CACACA" BorderThickness="0,1,0,0"
+                Padding="6,3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <Image Width="18" Height="18" Margin="0,0,5,0" VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Source="pack://application:,,,/ValorVDC_FamilyBrowser;component/Resources/Logo-100x100.png" />
+                <TextBlock FontSize="9" Foreground="#999999" VerticalAlignment="Center">
+                    <Hyperlink NavigateUri="https://valorvdc.com"
+                               RequestNavigate="Hyperlink_RequestNavigate"
+                               Foreground="#888888" TextDecorations="None">
+                        <Run Text="ValorVDC" FontWeight="SemiBold" Foreground="#666666" />
+                        <Run Text="  ·  Revit Plugins &amp; Families" />
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>

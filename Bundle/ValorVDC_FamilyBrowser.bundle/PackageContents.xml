@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage SchemaVersion="1.0"
+                    Version="1.0.0"
+                    ProductType="Application"
+                    SupportedLocales="Enu"
+                    AppObjectGuid="{3A4B5C6D-E7F8-4A9B-0C1D-2E3F4A5B6C7D}"
+                    Name="ValorVDC Family Browser"
+                    Description="Free dockable family browser palette for Autodesk Revit. Browse, filter, and place loaded families without the Project Browser."
+                    Author="ValorVDC">
+
+  <CompanyDetails Name="ValorVDC"
+                  Email="chris@valorvdc.com"
+                  Url="https://valorvdc.com" />
+
+  <RuntimeRequirements OS="Win64" />
+
+  <Components Description="ValorVDC Family Browser">
+
+    <ComponentEntry ModuleName="./Contents/2024/ValorVDC_FamilyBrowser.addin"
+                    Version="1.0.0"
+                    AppDescription="Revit 2024"
+                    SeriesMin="R2024"
+                    SeriesMax="R2024">
+      <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2024" SeriesMax="R2024" />
+    </ComponentEntry>
+
+    <ComponentEntry ModuleName="./Contents/2025/ValorVDC_FamilyBrowser.addin"
+                    Version="1.0.0"
+                    AppDescription="Revit 2025"
+                    SeriesMin="R2025"
+                    SeriesMax="R2025">
+      <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2025" SeriesMax="R2025" />
+    </ComponentEntry>
+
+    <ComponentEntry ModuleName="./Contents/2026/ValorVDC_FamilyBrowser.addin"
+                    Version="1.0.0"
+                    AppDescription="Revit 2026"
+                    SeriesMin="R2026"
+                    SeriesMax="R2026">
+      <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2026" SeriesMax="R2026" />
+    </ComponentEntry>
+
+    <ComponentEntry ModuleName="./Contents/2027/ValorVDC_FamilyBrowser.addin"
+                    Version="1.0.0"
+                    AppDescription="Revit 2027"
+                    SeriesMin="R2027"
+                    SeriesMax="R2027">
+      <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2027" SeriesMax="R2027" />
+    </ComponentEntry>
+
+  </Components>
+
+</ApplicationPackage>

@@ -1,0 +1,34 @@
+# Build output
+bin/
+obj/
+Installer/bin/
+Installer/obj/
+
+# macOS metadata
+._*
+.DS_Store
+Thumbs.db
+
+# Rider / JetBrains
+.idea/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# NuGet
+packages/
+*.nupkg
+
+# WiX intermediate
+*.wixobj
+*.wixpdb
+
+# Code-signing artifacts
+*.pfx
+*.p12
+
+# Revit local journal/log files
+*.journal

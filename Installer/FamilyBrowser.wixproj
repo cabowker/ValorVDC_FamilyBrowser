@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Import Project="..\Version.props" />
+
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+        <ProductVersion>$(ProductVersion)</ProductVersion>
+        <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+        <SchemaVersion>2.0</SchemaVersion>
+        <OutputName>ValorVDC_FamilyBrowser_$(ProductVersion)</OutputName>
+        <OutputType>Package</OutputType>
+        <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+        <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+        <OutputPath>bin\Debug\</OutputPath>
+        <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+        <DefineConstants>Debug</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+        <OutputPath>bin\Release\</OutputPath>
+        <IntermediateOutputPath>obj\Release\</IntermediateOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Product.wxs">
+            <SubType>Designer</SubType>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <WixExtension Include="WixUIExtension">
+            <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+            <Name>WixUIExtension</Name>
+        </WixExtension>
+        <WixExtension Include="WixUtilExtension">
+            <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+            <Name>WixUtilExtension</Name>
+        </WixExtension>
+    </ItemGroup>
+
+    <!-- Pass ProductVersion defined in Version.props to WiX candle -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);ProductVersion=$(ProductVersion)</DefineConstants>
+    </PropertyGroup>
+
+    <Import Project="$(WixTargetsPath)" />
+
+</Project>
