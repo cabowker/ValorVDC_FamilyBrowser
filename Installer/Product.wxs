@@ -29,7 +29,7 @@
         <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
         <Feature Id="ProductFeature" Title="ValorVDC Family Browser" Level="1">
-            <ComponentGroupRef Id="BundleComponents" />
+            <ComponentGroupRef Id="RevitAddinComponents" />
             <ComponentGroupRef Id="ShortcutComponents" />
         </Feature>
 
@@ -41,21 +41,31 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
 
             <!--
-                Bundle installs to:
-                C:\ProgramData\Autodesk\ApplicationPlugins\ValorVDC_FamilyBrowser.bundle\
-                This is the Autodesk-preferred location — Revit scans it on startup
-                and PackageContents.xml routes each Revit version to the right DLL.
+                Installs to C:\ProgramData\Autodesk\Revit\Addins\<year>\
+                .addin files go in the root of each year folder (Revit only scans the root).
+                DLLs go in a ValorVDC_FamilyBrowser subfolder referenced by absolute path.
             -->
             <Directory Id="CommonAppDataFolder">
                 <Directory Id="AutodeskCommonFolder" Name="Autodesk">
-                    <Directory Id="ApplicationPluginsFolder" Name="ApplicationPlugins">
-                        <Directory Id="BundleFolder" Name="ValorVDC_FamilyBrowser.bundle">
-                            <Directory Id="ContentsFolder" Name="Contents">
-                                <Directory Id="Contents2024" Name="2024" />
-                                <Directory Id="Contents2025" Name="2025" />
-                                <Directory Id="Contents2026" Name="2026" />
-                                <Directory Id="Contents2027" Name="2027" />
+                    <Directory Id="RevitCommonFolder" Name="Revit">
+                        <Directory Id="RevitAddinsFolder" Name="Addins">
+
+                            <Directory Id="RevitAddins2024" Name="2024">
+                                <Directory Id="RevitAddinsSubDir2024" Name="ValorVDC_FamilyBrowser" />
                             </Directory>
+
+                            <Directory Id="RevitAddins2025" Name="2025">
+                                <Directory Id="RevitAddinsSubDir2025" Name="ValorVDC_FamilyBrowser" />
+                            </Directory>
+
+                            <Directory Id="RevitAddins2026" Name="2026">
+                                <Directory Id="RevitAddinsSubDir2026" Name="ValorVDC_FamilyBrowser" />
+                            </Directory>
+
+                            <Directory Id="RevitAddins2027" Name="2027">
+                                <Directory Id="RevitAddinsSubDir2027" Name="ValorVDC_FamilyBrowser" />
+                            </Directory>
+
                         </Directory>
                     </Directory>
                 </Directory>
@@ -70,74 +80,70 @@
     </Fragment>
 
     <Fragment>
-        <ComponentGroup Id="BundleComponents">
-
-            <!-- PackageContents.xml — tells Revit which version folder to use -->
-            <Component Id="PackageContents" Directory="BundleFolder"
-                       Guid="1A2B3C4D-E5F6-4A7B-8C9D-0E1F2A3B4C5D">
-                <File Id="PackageContentsFile"
-                      Source="..\Bundle\ValorVDC_FamilyBrowser.bundle\PackageContents.xml"
-                      KeyPath="yes" />
-            </Component>
+        <ComponentGroup Id="RevitAddinComponents">
 
             <!-- ── Revit 2024 (net48) ── -->
-            <Component Id="Addin2024" Directory="Contents2024"
+            <Component Id="Addin2024" Directory="RevitAddins2024"
                        Guid="2B3C4D5E-F6A7-4B8C-9D0E-1F2A3B4C5D6E">
                 <File Id="Addin2024File"
-                      Source="..\Bundle\ValorVDC_FamilyBrowser.bundle\Contents\2024\ValorVDC_FamilyBrowser.addin"
+                      Source="AddinFiles\ValorVDC_FamilyBrowser_2024.addin"
+                      Name="ValorVDC_FamilyBrowser.addin"
                       KeyPath="yes" />
             </Component>
-            <Component Id="DLL2024" Directory="Contents2024"
+            <Component Id="DLL2024" Directory="RevitAddinsSubDir2024"
                        Guid="3C4D5E6F-A7B8-4C9D-0E1F-2A3B4C5D6E7F">
-                <RemoveFile Id="RemoveDLL2024" Name="ValorVDC_FamilyBrowser.dll" On="both" />
                 <File Id="DLL2024File"
                       Source="..\bin\Release R24\ValorVDC_FamilyBrowser.dll"
                       KeyPath="yes" />
+                <RemoveFolder Id="RemoveSubDir2024" Directory="RevitAddinsSubDir2024" On="uninstall" />
             </Component>
 
             <!-- ── Revit 2025 (net8.0-windows) ── -->
-            <Component Id="Addin2025" Directory="Contents2025"
+            <Component Id="Addin2025" Directory="RevitAddins2025"
                        Guid="4D5E6F7A-B8C9-4D0E-1F2A-3B4C5D6E7F8A">
                 <File Id="Addin2025File"
-                      Source="..\Bundle\ValorVDC_FamilyBrowser.bundle\Contents\2025\ValorVDC_FamilyBrowser.addin"
+                      Source="AddinFiles\ValorVDC_FamilyBrowser_2025.addin"
+                      Name="ValorVDC_FamilyBrowser.addin"
                       KeyPath="yes" />
             </Component>
-            <Component Id="DLL2025" Directory="Contents2025"
+            <Component Id="DLL2025" Directory="RevitAddinsSubDir2025"
                        Guid="5E6F7A8B-C9D0-4E1F-2A3B-4C5D6E7F8A9B">
-                <RemoveFile Id="RemoveDLL2025" Name="ValorVDC_FamilyBrowser.dll" On="both" />
                 <File Id="DLL2025File"
                       Source="..\bin\Release R25\ValorVDC_FamilyBrowser.dll"
                       KeyPath="yes" />
+                <RemoveFolder Id="RemoveSubDir2025" Directory="RevitAddinsSubDir2025" On="uninstall" />
             </Component>
 
             <!-- ── Revit 2026 (net8.0-windows) ── -->
-            <Component Id="Addin2026" Directory="Contents2026"
+            <Component Id="Addin2026" Directory="RevitAddins2026"
                        Guid="6F7A8B9C-D0E1-4F2A-3B4C-5D6E7F8A9B0C">
                 <File Id="Addin2026File"
-                      Source="..\Bundle\ValorVDC_FamilyBrowser.bundle\Contents\2026\ValorVDC_FamilyBrowser.addin"
+                      Source="AddinFiles\ValorVDC_FamilyBrowser_2026.addin"
+                      Name="ValorVDC_FamilyBrowser.addin"
                       KeyPath="yes" />
             </Component>
-            <Component Id="DLL2026" Directory="Contents2026"
+            <Component Id="DLL2026" Directory="RevitAddinsSubDir2026"
                        Guid="7A8B9C0D-E1F2-4A3B-4C5D-6E7F8A9B0C1D">
-                <RemoveFile Id="RemoveDLL2026" Name="ValorVDC_FamilyBrowser.dll" On="both" />
                 <File Id="DLL2026File"
                       Source="..\bin\Release R26\ValorVDC_FamilyBrowser.dll"
                       KeyPath="yes" />
+                <RemoveFolder Id="RemoveSubDir2026" Directory="RevitAddinsSubDir2026" On="uninstall" />
             </Component>
 
             <!-- ── Revit 2027 (net10.0-windows) ── -->
-            <Component Id="Addin2027" Directory="Contents2027"
+            <Component Id="Addin2027" Directory="RevitAddins2027"
                        Guid="8B9C0D1E-F2A3-4B4C-5D6E-7F8A9B0C1D2E">
                 <File Id="Addin2027File"
-                      Source="..\Bundle\ValorVDC_FamilyBrowser.bundle\Contents\2027\ValorVDC_FamilyBrowser.addin"
+                      Source="AddinFiles\ValorVDC_FamilyBrowser_2027.addin"
+                      Name="ValorVDC_FamilyBrowser.addin"
                       KeyPath="yes" />
             </Component>
-            <Component Id="DLL2027" Directory="Contents2027"
+            <Component Id="DLL2027" Directory="RevitAddinsSubDir2027"
                        Guid="9C0D1E2F-A3B4-4C5D-6E7F-8A9B0C1D2E3F">
-                <RemoveFile Id="RemoveDLL2027" Name="ValorVDC_FamilyBrowser.dll" On="both" />
                 <File Id="DLL2027File"
                       Source="..\bin\Release R27\ValorVDC_FamilyBrowser.dll"
                       KeyPath="yes" />
+                <RemoveFolder Id="RemoveSubDir2027" Directory="RevitAddinsSubDir2027" On="uninstall" />
             </Component>
 
         </ComponentGroup>
