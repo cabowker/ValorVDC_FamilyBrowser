@@ -2,12 +2,19 @@
 setlocal
 
 :: ─────────────────────────────────────────────────────────────────────────────
-:: BuildOnly.bat — builds all Revit target DLLs, then packages the MSI.
+:: BuildOnly.bat — packages the MSI from already-built DLLs.
+::
+:: Run Build.bat first to compile the plugin DLLs for all Revit versions.
+:: This script only runs candle + light — it never touches the C# project,
+:: so Rider's project.assets.json is left undisturbed.
 ::
 :: Prerequisites:
 ::   • WiX Toolset v3.14 installed  (https://wixtoolset.org/releases/)
-::   • Visual Studio 2022 or Build Tools installed (MSBuild 17)
-::   • Run from the Installer\ directory (or set REPO_ROOT below)
+::   • DLLs already built:
+::       bin\Release R24\ValorVDC_FamilyBrowser.dll
+::       bin\Release R25\ValorVDC_FamilyBrowser.dll
+::       bin\Release R26\ValorVDC_FamilyBrowser.dll
+::       bin\Release R27\ValorVDC_FamilyBrowser.dll
 ::
 :: Output:
 ::   Installer\bin\Release\ValorVDC_FamilyBrowser_<version>.msi
@@ -18,21 +25,9 @@ set "SCRIPT_DIR=%~dp0"
 set "REPO_ROOT=%SCRIPT_DIR%.."
 pushd "%REPO_ROOT%"
 
-:: ── 1. Locate MSBuild ───────────────────────────────────────────────────────
-for /f "usebackq delims=" %%i in (
-    `"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`
-) do set "MSBUILD=%%i"
-
-if not defined MSBUILD (
-    echo ERROR: MSBuild not found. Install Visual Studio 2022 Build Tools.
-    popd & exit /b 1
-)
-echo MSBuild: %MSBUILD%
-
-:: ── 2. Locate WiX candle / light ────────────────────────────────────────────
+:: ── 1. Locate WiX candle / light ────────────────────────────────────────────
 set "WIX_BIN=%WIX%bin"
 if not exist "%WIX_BIN%\candle.exe" (
-    :: Try common install path if WIX env var is not set
     set "WIX_BIN=%ProgramFiles(x86)%\WiX Toolset v3.14\bin"
 )
 if not exist "%WIX_BIN%\candle.exe" (
@@ -42,63 +37,19 @@ if not exist "%WIX_BIN%\candle.exe" (
 )
 echo WiX bin: %WIX_BIN%
 
-:: ── 3. Restore then build each Revit version in sequence ───────────────────
-::    IMPORTANT: project.assets.json is shared — restore is paired with its
-::    build so a later restore doesn't overwrite the assets before R24 builds.
-echo.
-echo Restoring and building plugin DLLs...
-
-for %%V in (R24 R25 R26 R27) do (
-    echo.
-    echo   [%%V] Restoring...
-    "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
-        /p:Configuration="Release %%V" ^
-        /p:Platform=AnyCPU ^
-        /t:Restore ^
-        /v:minimal ^
-        /nologo
-    if errorlevel 1 (
-        echo ERROR: Restore failed for Release %%V
-        popd & exit /b 1
-    )
-
-    echo   [%%V] Building...
-    "%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
-        /p:Configuration="Release %%V" ^
-        /p:Platform=AnyCPU ^
-        /t:Build ^
-        /v:minimal ^
-        /nologo
-    if errorlevel 1 (
-        echo ERROR: Build failed for Release %%V
-        popd & exit /b 1
-    )
-)
-
-:: ── Reset project.assets.json to R24 so Rider stays in sync after the build ──
-echo.
-echo   Resetting IDE project state to R24...
-"%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
-    /p:Configuration="Release R24" ^
-    /p:Platform=AnyCPU ^
-    /t:Restore ^
-    /v:quiet ^
-    /nologo
-
-:: ── 5. Verify output DLLs exist ─────────────────────────────────────────────
+:: ── 2. Verify output DLLs exist ─────────────────────────────────────────────
 echo.
 echo Verifying output DLLs...
 for %%V in (R24 R25 R26 R27) do (
     if not exist "bin\Release %%V\ValorVDC_FamilyBrowser.dll" (
         echo ERROR: bin\Release %%V\ValorVDC_FamilyBrowser.dll not found.
+        echo        Run Build.bat first to compile plugin DLLs for all Revit versions.
         popd & exit /b 1
     )
     echo   bin\Release %%V\ValorVDC_FamilyBrowser.dll  OK
 )
 
-:: ── 6. Read version from Version.props ──────────────────────────────────────
-:: Parse <ProductVersion>x.y.z</ProductVersion>
-:: Tokens: 1=leading spaces, 2=tag name, 3=value
+:: ── 3. Read version from Version.props ──────────────────────────────────────
 for /f "tokens=3 delims=><" %%v in (
     'findstr /i "ProductVersion" Version.props'
 ) do set "PRODUCT_VERSION=%%v"
@@ -106,7 +57,7 @@ for /f "tokens=3 delims=><" %%v in (
 echo.
 echo Product version: %PRODUCT_VERSION%
 
-:: ── 7. Build the MSI ────────────────────────────────────────────────────────
+:: ── 4. Build the MSI ────────────────────────────────────────────────────────
 echo.
 echo Building MSI...
 
