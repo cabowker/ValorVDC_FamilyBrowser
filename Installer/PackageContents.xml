@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Autodesk App Store bundle manifest.
+    Update AppVersion to match Version.props before each release.
+    SeriesMin/SeriesMax use "R" prefix: R2024, R2025, R2026, R2027.
+-->
+<ApplicationPackage SchemaVersion="1.0"
+                    AutodeskProduct="Revit"
+                    Name="ValorVDC Family Browser"
+                    Description="Browse and insert Revit families from a dockable panel"
+                    AppVersion="1.0.3"
+                    FriendlyVersion="1.0.3"
+                    ProductType="Application"
+                    SupportedLocales="Enu"
+                    AppNameSpace="com.valorvdc.familybrowser"
+                    Author="ValorVDC"
+                    ProductCode="{3B4C5D6E-F7A8-4B9C-0D1E-2F3A4B5C6D7E}">
+
+  <CompanyDetails Name="ValorVDC"
+                  Url="https://www.valorvdc.com/" />
+
+  <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2024" SeriesMax="R2027" />
+
+  <Components Description="Revit 2024">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2024" SeriesMax="R2024" />
+    <ComponentEntry AppName="ValorVDC Family Browser"
+                    Version="1.0.3"
+                    ModuleName="./Contents/2024/ValorVDC_FamilyBrowser.addin"
+                    AppDescription="Family Browser for Revit 2024"
+                    LoadOnRevitStartup="True" />
+  </Components>
+
+  <Components Description="Revit 2025">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2025" SeriesMax="R2025" />
+    <ComponentEntry AppName="ValorVDC Family Browser"
+                    Version="1.0.3"
+                    ModuleName="./Contents/2025/ValorVDC_FamilyBrowser.addin"
+                    AppDescription="Family Browser for Revit 2025"
+                    LoadOnRevitStartup="True" />
+  </Components>
+
+  <Components Description="Revit 2026">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2026" SeriesMax="R2026" />
+    <ComponentEntry AppName="ValorVDC Family Browser"
+                    Version="1.0.3"
+                    ModuleName="./Contents/2026/ValorVDC_FamilyBrowser.addin"
+                    AppDescription="Family Browser for Revit 2026"
+                    LoadOnRevitStartup="True" />
+  </Components>
+
+  <Components Description="Revit 2027">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2027" SeriesMax="R2027" />
+    <ComponentEntry AppName="ValorVDC Family Browser"
+                    Version="1.0.3"
+                    ModuleName="./Contents/2027/ValorVDC_FamilyBrowser.addin"
+                    AppDescription="Family Browser for Revit 2027"
+                    LoadOnRevitStartup="True" />
+  </Components>
+
+</ApplicationPackage>

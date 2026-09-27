@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
     <AddIn Type="Application">
         <Name>ValorVDC Family Browser</Name>
-        <Assembly>C:\ProgramData\Autodesk\Revit\Addins\2027\ValorVDC_FamilyBrowser\ValorVDC_FamilyBrowser.dll</Assembly>
+        <Assembly>ValorVDC_FamilyBrowser.dll</Assembly>
         <AddInId>E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A5B</AddInId>
         <FullClassName>ValorVDC_FamilyBrowser.AppCommand</FullClassName>
-        <Text>ValorVDC Family Browser</Text>
         <VendorId>ValorVDC</VendorId>
         <VendorDescription>ValorVDC - Free Revit Productivity Tools</VendorDescription>
     </AddIn>
