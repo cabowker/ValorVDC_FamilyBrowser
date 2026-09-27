@@ -75,6 +75,16 @@ for %%V in (R24 R25 R26 R27) do (
     )
 )
 
+:: ── Reset project.assets.json to R24 so Rider stays in sync after the build ──
+echo.
+echo   Resetting IDE project state to R24...
+"%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
+    /p:Configuration="Release R24" ^
+    /p:Platform=AnyCPU ^
+    /t:Restore ^
+    /v:quiet ^
+    /nologo
+
 :: ── 5. Verify output DLLs exist ─────────────────────────────────────────────
 echo.
 echo Verifying output DLLs...

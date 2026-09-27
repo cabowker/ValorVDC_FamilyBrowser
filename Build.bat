@@ -72,6 +72,16 @@ for %%V in (%VERSIONS%) do (
     echo.
 )
 
+:: ── Reset project.assets.json to R24 (net48) so Rider stays in sync ─────────
+:: The last per-version restore leaves assets locked to its target framework.
+:: Restoring R24 last puts it back to net48, which is what the IDE expects.
+echo   Resetting IDE project state to R24...
+"%MSBUILD%" ValorVDC_FamilyBrowser.csproj ^
+    /p:Configuration="Release R24" ^
+    /p:Platform=AnyCPU ^
+    /t:Restore ^
+    /v:quiet /nologo
+
 echo ─────────────────────────────────────────────────────────────────────────
 echo  Done.
 echo ─────────────────────────────────────────────────────────────────────────
