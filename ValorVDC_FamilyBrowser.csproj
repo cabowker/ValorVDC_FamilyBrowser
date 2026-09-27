@@ -19,21 +19,25 @@
     <PropertyGroup Condition="$(Configuration.Contains('R24'))">
         <RevitVersion>2024</RevitVersion>
         <TargetFramework>net48</TargetFramework>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(Configuration.Contains('R25'))">
         <RevitVersion>2025</RevitVersion>
         <TargetFramework>net8.0-windows</TargetFramework>
         <DefineConstants>REVIT2025;REVIT2024_OR_GREATER;REVIT2025_OR_GREATER</DefineConstants>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(Configuration.Contains('R26'))">
         <RevitVersion>2026</RevitVersion>
         <TargetFramework>net8.0-windows</TargetFramework>
         <DefineConstants>REVIT2026;REVIT2026_OR_GREATER;REVIT2025_OR_GREATER;REVIT2024_OR_GREATER</DefineConstants>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(Configuration.Contains('R27'))">
         <RevitVersion>2027</RevitVersion>
         <TargetFramework>net10.0-windows</TargetFramework>
         <DefineConstants>REVIT2027;REVIT2027_OR_GREATER;REVIT2026_OR_GREATER;REVIT2025_OR_GREATER;REVIT2024_OR_GREATER</DefineConstants>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup>
