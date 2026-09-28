@@ -561,10 +561,11 @@
                     </TextBlock>
                 </StackPanel>
 
-                <!-- Version number -->
+                <!-- Version number — only visible in configure/settings mode -->
                 <TextBlock FontSize="8" Foreground="#BBBBBB" HorizontalAlignment="Center"
                            Margin="0,1,0,0"
-                           Text="{Binding VersionString}" />
+                           Text="{Binding VersionString}"
+                           Visibility="{Binding IsConfigureMode, Converter={StaticResource BoolVis}}" />
 
             </StackPanel>
         </Border>
