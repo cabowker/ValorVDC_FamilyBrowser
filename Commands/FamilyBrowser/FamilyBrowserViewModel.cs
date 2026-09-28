@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -44,6 +45,9 @@ public partial class FamilyBrowserViewModel : ObservableObject
     private string? _updateTag;     // e.g. "v1.0.2" when newer release found, else null
 
     public bool IsUpdateAvailable => UpdateTag != null;
+
+    public string VersionString =>
+        "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
 
     partial void OnUpdateTagChanged(string? value)
         => OnPropertyChanged(nameof(IsUpdateAvailable));

@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="Version.props" />
+
     <PropertyGroup>
         <UseWPF>true</UseWPF>
         <LangVersion>latest</LangVersion>
@@ -8,9 +10,9 @@
         <ImplicitUsings>true</ImplicitUsings>
         <PublishAddinFiles>true</PublishAddinFiles>
         <Configurations>Debug R24;Debug R25;Debug R26;Debug R27;Release R24;Release R25;Release R26;Release R27</Configurations>
-        <Version>1.0.0</Version>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
+        <Version>$(ProductVersion)</Version>
+        <AssemblyVersion>$(ProductVersion).0</AssemblyVersion>
+        <FileVersion>$(ProductVersion).0</FileVersion>
         <RootNamespace>ValorVDC_FamilyBrowser</RootNamespace>
         <AssemblyName>ValorVDC_FamilyBrowser</AssemblyName>
         <Platforms>AnyCPU</Platforms>

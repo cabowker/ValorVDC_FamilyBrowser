@@ -561,6 +561,11 @@
                     </TextBlock>
                 </StackPanel>
 
+                <!-- Version number -->
+                <TextBlock FontSize="8" Foreground="#BBBBBB" HorizontalAlignment="Center"
+                           Margin="0,1,0,0"
+                           Text="{Binding VersionString}" />
+
             </StackPanel>
         </Border>
 
