@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
 
 namespace ValorVDC_FamilyBrowser.Commands.FamilyBrowser.ExternalEvents;
@@ -39,7 +38,7 @@ public class PlaceFamilyTypeHandler : IExternalEventHandler
             // Blocking call — stays active until user presses ESC.
             uiDoc.PromptForFamilyInstancePlacement(symbol);
         }
-        catch (OperationCanceledException)
+        catch (Autodesk.Revit.Exceptions.OperationCanceledException)
         {
             // User pressed ESC — normal exit, nothing to report.
         }
