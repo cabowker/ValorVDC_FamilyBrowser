@@ -49,6 +49,12 @@ public partial class FamilyBrowserViewModel : ObservableObject
     public string VersionString =>
         "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
 
+    [ObservableProperty]
+    private bool _isPlacingFamily;
+
+    [ObservableProperty]
+    private string _placingFamilyName = "";
+
     partial void OnUpdateTagChanged(string? value)
         => OnPropertyChanged(nameof(IsUpdateAvailable));
 
@@ -167,7 +173,9 @@ public partial class FamilyBrowserViewModel : ObservableObject
     private void PlaceElement(FamilyBrowserTypeItem item)
     {
         if (item == null) return;
-        _placeHandler.SymbolId = item.SymbolId;
+        _placeHandler.SymbolId  = item.SymbolId;
+        _placeHandler.OnStarted  = () => { IsPlacingFamily = true;  PlacingFamilyName = item.DisplayName; };
+        _placeHandler.OnFinished = () => { IsPlacingFamily = false; PlacingFamilyName = ""; };
         _placeEvent.Raise();
     }
 

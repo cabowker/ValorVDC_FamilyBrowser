@@ -347,11 +347,28 @@
             </Grid>
         </Border>
 
-        <!-- ── Loading strip ── -->
-        <Border Grid.Row="1" Background="#FFF9C4" Padding="6,3"
-                Visibility="{Binding IsLoading, Converter={StaticResource BoolVis}}">
-            <TextBlock Text="Loading…" FontSize="10" Foreground="#7B6A00" />
-        </Border>
+        <!-- ── Status strips (loading + placement active) ── -->
+        <StackPanel Grid.Row="1">
+
+            <Border Background="#FFF9C4" Padding="6,3"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolVis}}">
+                <TextBlock Text="Loading…" FontSize="10" Foreground="#7B6A00" />
+            </Border>
+
+            <!-- Shown while PromptForFamilyInstancePlacement is active (until ESC) -->
+            <Border Background="#D6EEFF" BorderBrush="#7DB8D8" BorderThickness="0,0,0,1"
+                    Padding="6,4"
+                    Visibility="{Binding IsPlacingFamily, Converter={StaticResource BoolVis}}">
+                <TextBlock FontSize="10" Foreground="#1A4E6E">
+                    <Run Text="📌  Placing: " />
+                    <Run Text="{Binding PlacingFamilyName}" FontWeight="SemiBold" />
+                    <Run Text="   —   press " Foreground="#3A6A8A" />
+                    <Run Text="ESC" FontWeight="Bold" Foreground="#1A4E6E" />
+                    <Run Text=" to finish" Foreground="#3A6A8A" />
+                </TextBlock>
+            </Border>
+
+        </StackPanel>
 
         <!-- ══════════ BROWSE VIEW ══════════ -->
         <ScrollViewer Grid.Row="2"
