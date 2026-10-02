@@ -355,19 +355,6 @@
                 <TextBlock Text="Loading…" FontSize="10" Foreground="#7B6A00" />
             </Border>
 
-            <!-- Shown while PromptForFamilyInstancePlacement is active (until ESC) -->
-            <Border Background="#D6EEFF" BorderBrush="#7DB8D8" BorderThickness="0,0,0,1"
-                    Padding="6,4"
-                    Visibility="{Binding IsPlacingFamily, Converter={StaticResource BoolVis}}">
-                <TextBlock FontSize="10" Foreground="#1A4E6E">
-                    <Run Text="📌  Placing: " />
-                    <Run Text="{Binding PlacingFamilyName}" FontWeight="SemiBold" />
-                    <Run Text="   —   press " Foreground="#3A6A8A" />
-                    <Run Text="ESC" FontWeight="Bold" Foreground="#1A4E6E" />
-                    <Run Text=" to finish" Foreground="#3A6A8A" />
-                </TextBlock>
-            </Border>
-
         </StackPanel>
 
         <!-- ══════════ BROWSE VIEW ══════════ -->
@@ -443,6 +430,20 @@
 
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Blue tint overlay while placement is active — IsHitTestVisible=False lets clicks through -->
+        <Border Grid.Row="2"
+                Background="#55B3D8F5"
+                IsHitTestVisible="False"
+                Visibility="{Binding IsPlacingFamily, Converter={StaticResource BoolVis}}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       Margin="0,0,0,8" FontSize="10" FontWeight="SemiBold"
+                       Foreground="#1A4E6E">
+                <Run Text="📌  Placing: " />
+                <Run Text="{Binding PlacingFamilyName}" />
+                <Run Text="   —   press ESC to finish" Foreground="#2A6A8A" />
+            </TextBlock>
+        </Border>
 
         <!-- ══════════ CONFIGURE VIEW ══════════ -->
         <ScrollViewer Grid.Row="2"
